@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MerchantService {
 
@@ -38,6 +40,36 @@ public class MerchantService {
             return new BaseResponse().successProcess(merchant);
         }catch (Exception e){
             logger.error("failed to get detail merchant", e);
+            return new BaseResponse().failedProcess();
+        }
+    }
+
+    public BaseResponse getMerchant() {
+        try {
+            List<Merchant> merchants = merchantDao.findAll();
+
+            return new BaseResponse().successProcess(merchants);
+        } catch (Exception e) {
+            logger.error("failed to get list merchant", e);
+            return new BaseResponse().failedProcess();
+        }
+    }
+
+    public BaseResponse updateMerchant(Long id) {
+
+        try {
+
+            Merchant merchant = merchantDao.findById(id).orElse(null);
+
+            if (merchant == null) {
+                return new BaseResponse().failedProcess();
+            }
+
+            merchantDao.save(merchant);
+
+            return new BaseResponse().successProcess();
+        } catch (Exception e) {
+            logger.error("failed to create merchant", e);
             return new BaseResponse().failedProcess();
         }
     }

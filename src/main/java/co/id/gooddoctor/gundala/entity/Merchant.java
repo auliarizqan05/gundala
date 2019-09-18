@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 
 @Data
 @Entity
@@ -15,5 +16,8 @@ public class Merchant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     String name;
-    String address;
+    BigInteger accountNumber;
+    String branchName;
+    String bankName;
+    double commissionPercentage;
 }

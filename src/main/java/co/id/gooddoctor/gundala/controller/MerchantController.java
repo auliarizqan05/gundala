@@ -21,9 +21,23 @@ public class MerchantController {
     }
 
     @GetMapping()
+    public BaseResponse getMerchants() {
+
+        BaseResponse baseResponse = merchantService.getMerchant();
+        return baseResponse;
+    }
+
+    @GetMapping("/{id}")
     public BaseResponse getDetailMerchant(@PathVariable long id){
 
         BaseResponse baseResponse = merchantService.getDetailMerchant(id);
+        return baseResponse;
+    }
+
+    @PutMapping()
+    public BaseResponse updateMerchant(@PathVariable long id) {
+
+        BaseResponse baseResponse = merchantService.updateMerchant(id);
         return baseResponse;
     }
 

@@ -1,7 +1,6 @@
 package co.id.gooddoctor.gundala.model;
 
 import lombok.Data;
-import java.util.Map;
 
 @Data
 public class BaseResponse {

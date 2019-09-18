@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.xml.ws.Response;
 
 @RestController
-public class MerchantPayout {
+public class SettlementProcessController {
 
     @GetMapping(value = "import-file")
     public Response importFile(){
