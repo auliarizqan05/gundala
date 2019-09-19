@@ -30,121 +30,121 @@ public class GenerateSettlement {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        List<GenSettlementDto> genSettlementDtos = new ArrayList<>();
-        List<GenSettlementItemDto> genSettlementItemDtos = new ArrayList<>();
-        GenSettlementDto genSettlementDto = new GenSettlementDto();
-        genSettlementDto.setTitle("ini judul");
-        genSettlementDto.setVendorName("ini vendor name");
-        genSettlementDto.setBank("ini bank");
-        genSettlementDto.setNoRek("ini no rek");
-        genSettlementDto.setPeriodTrf("ini perioe trf");
-        genSettlementDto.setTotalIncome("ini total income");
-        genSettlementDto.setTotalLebihBayar("ini total lebih bayar");
-        genSettlementDto.setTotalPay("ini total pay");
-
-        GenSettlementItemDto genSettlementItemDto1 = new GenSettlementItemDto();
-        genSettlementItemDto1.setOrderCreated("ini order created");
-        genSettlementItemDto1.setOrderId("ini order id");
-        genSettlementItemDto1.setOrderSubtotal("ini order subtotal");
-        genSettlementItemDto1.setPayDate("ini pay date");
-        genSettlementItemDto1.setPayStatus("ini pay status");
-        genSettlementItemDto1.setStoreId("ini store id");
-        genSettlementItemDto1.setStoreName("ini store name");
-        genSettlementItemDto1.setUserId("ini user id");
-        genSettlementItemDto1.setVendorId("ini Vendor id");
-        genSettlementItemDto1.setVendorName("ini Vendor name");
-
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-        genSettlementItemDtos.add(genSettlementItemDto1);
-
-
-        genSettlementDto.setItems(genSettlementItemDtos);
-        genSettlementDtos.add(genSettlementDto);
-
-
-        GenerateSettlement generateSettlement = new GenerateSettlement();
-        generateSettlement.generateExcel(genSettlementDto);
-
-    }
+//    public static void main(String[] args) throws IOException {
+//        List<GenSettlementDto> genSettlementDtos = new ArrayList<>();
+//        List<GenSettlementItemDto> genSettlementItemDtos = new ArrayList<>();
+//        GenSettlementDto genSettlementDto = new GenSettlementDto();
+//        genSettlementDto.setTitle("ini judul");
+//        genSettlementDto.setVendorName("ini vendor name");
+//        genSettlementDto.setBank("ini bank");
+//        genSettlementDto.setNoRek("ini no rek");
+//        genSettlementDto.setPeriodTrf("ini perioe trf");
+//        genSettlementDto.setTotalIncome("ini total income");
+//        genSettlementDto.setTotalLebihBayar("ini total lebih bayar");
+//        genSettlementDto.setTotalPay("ini total pay");
+//
+//        GenSettlementItemDto genSettlementItemDto1 = new GenSettlementItemDto();
+//        genSettlementItemDto1.setOrderCreated("ini order created");
+//        genSettlementItemDto1.setOrderId("ini order id");
+//        genSettlementItemDto1.setOrderSubtotal("ini order subtotal");
+//        genSettlementItemDto1.setPayDate("ini pay date");
+//        genSettlementItemDto1.setPayStatus("ini pay status");
+//        genSettlementItemDto1.setStoreId("ini store id");
+//        genSettlementItemDto1.setStoreName("ini store name");
+//        genSettlementItemDto1.setUserId("ini user id");
+//        genSettlementItemDto1.setVendorId("ini Vendor id");
+//        genSettlementItemDto1.setVendorName("ini Vendor name");
+//
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//        genSettlementItemDtos.add(genSettlementItemDto1);
+//
+//
+//        genSettlementDto.setItems(genSettlementItemDtos);
+//        genSettlementDtos.add(genSettlementDto);
+//
+//
+//        GenerateSettlement generateSettlement = new GenerateSettlement();
+//        generateSettlement.generateExcel(genSettlementDto);
+//
+//    }
 }
