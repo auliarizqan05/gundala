@@ -1,8 +1,10 @@
-package co.id.gooddoctor.gundala.model;
+package co.id.gooddoctor.gundala.domain.settlement.model;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
 public class BaseResponse {
 
     int code;
@@ -14,6 +16,15 @@ public class BaseResponse {
         this.code = 1;
         this.message = "Failed";
         this.status = 500;
+
+        return this;
+    }
+
+    public BaseResponse failedProcess(Object data) {
+        this.code = 1;
+        this.message = "Failed";
+        this.status = 500;
+        this.data = data;
 
         return this;
     }

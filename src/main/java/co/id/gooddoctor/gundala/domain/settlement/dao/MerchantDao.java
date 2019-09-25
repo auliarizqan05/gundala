@@ -1,6 +1,6 @@
-package co.id.gooddoctor.gundala.dao;
+package co.id.gooddoctor.gundala.domain.settlement.dao;
 
-import co.id.gooddoctor.gundala.entity.Merchant;
+import co.id.gooddoctor.gundala.domain.settlement.entity.Merchant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
-package co.id.gooddoctor.gundala.service;
+package co.id.gooddoctor.gundala.domain.similarity.service;
 
-import co.id.gooddoctor.gundala.model.MimsDto;
+import co.id.gooddoctor.gundala.domain.settlement.model.MimsDto;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -26,7 +26,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class SimilarityService {
-    public void compareDatabaseDrugsToVendorDrugs(final BigDecimal threshold, final File currentFile, final File databaseDrugsFile) throws IOException, InvalidFormatException {
+    public void compareDatabaseDrugsToVendorDrugs(final BigDecimal threshold,
+                                                  final File currentFile,
+                                                  final File databaseDrugsFile) throws IOException, InvalidFormatException {
 
         List<MimsDto> mimsDtos = new ArrayList<>();
         XSSFWorkbook workbookCurrent = new XSSFWorkbook(currentFile);

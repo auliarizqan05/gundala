@@ -1,4 +1,4 @@
-package co.id.gooddoctor.gundala.model;
+package co.id.gooddoctor.gundala.domain.settlement.model;
 
 import lombok.Data;
 

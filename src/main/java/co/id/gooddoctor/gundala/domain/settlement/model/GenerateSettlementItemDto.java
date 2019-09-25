@@ -1,9 +1,9 @@
-package co.id.gooddoctor.gundala.model;
+package co.id.gooddoctor.gundala.domain.settlement.model;
 
 import lombok.Data;
 
 @Data
-public class GenSettlementItemDto {
+public class GenerateSettlementItemDto {
     private String orderId;
     private String storeId;
     private String userId;

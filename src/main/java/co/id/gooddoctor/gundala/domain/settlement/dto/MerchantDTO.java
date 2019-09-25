@@ -1,23 +1,18 @@
-package co.id.gooddoctor.gundala.entity;
+package co.id.gooddoctor.gundala.domain.settlement.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.persistence.*;
 import java.math.BigInteger;
 
 @Data
-@Entity
-@Table
 @JsonIgnoreProperties
-public class Merchant {
+public class MerchantDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
     String name;
     BigInteger accountNumber;
     String branchName;
     String bankName;
     double commissionPercentage;
+    BigInteger vendorId;
 }
