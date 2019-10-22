@@ -1,18 +1,20 @@
 package co.id.gooddoctor.gundala.domain.similarity.service;
 
-import co.id.gooddoctor.gundala.domain.settlement.model.MimsDto;
+import co.id.gooddoctor.gundala.domain.similarity.model.MimsDto;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,15 +28,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class SimilarityService {
-    public void compareDatabaseDrugsToVendorDrugs(final BigDecimal threshold,
-                                                  final File currentFile,
-                                                  final File databaseDrugsFile) throws IOException, InvalidFormatException {
+
+    private static Logger logger = LoggerFactory.getLogger(SimilarityService.class);
+
+    public void compareDatabaseDrugsToVendorDrugs(@NonNull BigDecimal threshold,
+                                                  @NonNull MultipartFile currentFile,
+                                                  @NonNull MultipartFile databaseDrugsFile) throws IOException {
 
         List<MimsDto> mimsDtos = new ArrayList<>();
-        XSSFWorkbook workbookCurrent = new XSSFWorkbook(currentFile);
+        XSSFWorkbook workbookCurrent = new XSSFWorkbook(currentFile.getInputStream());
         XSSFSheet worksheetCurrent = workbookCurrent.getSheetAt(0);
 
-        XSSFWorkbook workbookMims = new XSSFWorkbook(databaseDrugsFile);
+        XSSFWorkbook workbookMims = new XSSFWorkbook(databaseDrugsFile.getInputStream());
         XSSFSheet worksheetMims = workbookMims.getSheetAt(0);
 
         JaroWinkler jaroWinkler = new JaroWinkler();
@@ -45,7 +50,7 @@ public class SimilarityService {
             List<String> rowNumMims = new ArrayList<>();
 
             XSSFRow rowCurrent = worksheetCurrent.getRow(i);
-            System.out.println("ROW KE: " + i);
+            logger.info("Process row number {} ", i);
 
             String productNameCurrent = rowCurrent.getCell(0).getStringCellValue();
             if (null == productNameCurrent || productNameCurrent.equals("")) {
@@ -53,7 +58,7 @@ public class SimilarityService {
             }
 
             productNameCurrent = productNameCurrent.toLowerCase();
-            String similarityPercent = "Need To Check or Not Found in Mims";
+            String similarityPercent = "Item not found in MIMS directory, please check";
             BigDecimal tempSililarityDec = BigDecimal.ZERO;
 
             for (int j = 0; j < worksheetMims.getPhysicalNumberOfRows(); j++) {
@@ -75,6 +80,8 @@ public class SimilarityService {
             mimsDto.setSimilarity(similarityPercent);
             rowNumMims = rowNumMims.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
             mimsDto.setRowMims(rowNumMims.toString());
+
+            logger.info("Product {} have similarty ? {}", productNameCurrent, similarityPercent);
 
             mimsDtos.add(mimsDto);
         }

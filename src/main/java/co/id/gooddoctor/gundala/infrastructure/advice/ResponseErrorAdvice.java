@@ -1,7 +1,8 @@
 package co.id.gooddoctor.gundala.infrastructure.advice;
 
-import co.id.gooddoctor.gundala.domain.settlement.model.BaseResponse;
+import co.id.gooddoctor.gundala.infrastructure.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -19,8 +20,19 @@ public class ResponseErrorAdvice {
                                                                      HttpServletRequest request) {
 
         BaseResponse response = new BaseResponse(HttpStatus.BAD_REQUEST.value(), 1,
-                ex.getLocalizedMessage(), null);
+                ex.getLocalizedMessage(), request.getRequestURL());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 
     }
+
+    @ExceptionHandler(ConversionFailedException.class)
+    public ResponseEntity<BaseResponse> handleConversionFailedException(Exception ex,
+                                                                        HttpServletRequest request) {
+
+        BaseResponse response = new BaseResponse(HttpStatus.BAD_REQUEST.value(), 1,
+                ex.getLocalizedMessage(), request.getRequestURL());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+
 }

@@ -9,9 +9,10 @@ import java.math.BigInteger;
 @JsonIgnoreProperties
 public class MerchantDTO {
 
-    String name;
-    BigInteger accountNumber;
+    String vendorName;
+    String accountNumber;
     String branchName;
+    String companyName;
     String bankName;
     double commissionPercentage;
     BigInteger vendorId;

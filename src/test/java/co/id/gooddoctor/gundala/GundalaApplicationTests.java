@@ -1,7 +1,6 @@
 package co.id.gooddoctor.gundala;
 
 import co.id.gooddoctor.gundala.infrastructure.util.JsonUtil;
-import io.restassured.http.ContentType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.restassured.RestAssured.given;
 
 @RunWith(SpringRunner.class)
 //@DataJpaTest
@@ -35,13 +33,6 @@ public class GundalaApplicationTests {
         merchant.put("address", "noble house");
 
         logger.info("isinya apa {} ", JsonUtil.objectToJson(merchant));
-        given()
-                .port(port)
-                .log()
-                .uri()
-                .contentType(ContentType.JSON)
-                .body(JsonUtil.objectToJson(merchant))
-                .post("gundala/merchants").getBody();
     }
 
 

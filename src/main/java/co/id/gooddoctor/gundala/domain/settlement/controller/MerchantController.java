@@ -1,7 +1,7 @@
 package co.id.gooddoctor.gundala.domain.settlement.controller;
 
 import co.id.gooddoctor.gundala.domain.settlement.dto.MerchantDTO;
-import co.id.gooddoctor.gundala.domain.settlement.model.BaseResponse;
+import co.id.gooddoctor.gundala.infrastructure.model.BaseResponse;
 import co.id.gooddoctor.gundala.domain.settlement.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,13 @@ public class MerchantController {
     @PostMapping()
     public BaseResponse insertMerchant(@RequestBody MerchantDTO merchant) {
 
-        BaseResponse baseResponse = merchantService.createMerchant(merchant);
+        BaseResponse baseResponse;
+        try {
+            baseResponse = merchantService.createMerchant(merchant);
+        } catch (Exception e) {
+            baseResponse = new BaseResponse().failedProcess(e.getMessage());
+        }
+
         return baseResponse;
     }
 

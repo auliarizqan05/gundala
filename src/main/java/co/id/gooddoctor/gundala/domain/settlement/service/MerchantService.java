@@ -4,7 +4,7 @@ import co.id.gooddoctor.gundala.domain.settlement.dao.MerchantDao;
 import co.id.gooddoctor.gundala.domain.settlement.dto.MerchantDTO;
 import co.id.gooddoctor.gundala.domain.settlement.entity.Merchant;
 import co.id.gooddoctor.gundala.domain.settlement.mapper.MerchantMapper;
-import co.id.gooddoctor.gundala.domain.settlement.model.BaseResponse;
+import co.id.gooddoctor.gundala.infrastructure.model.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class MerchantService {
             return new BaseResponse().successProcess();
         } catch (Exception e) {
             logger.error("failed to create merchant", e);
-            return new BaseResponse().failedProcess(e.getMessage());
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -40,7 +40,7 @@ public class MerchantService {
             return new BaseResponse().successProcess(merchant);
         } catch (Exception e) {
             logger.error("failed to get detail merchant", e);
-            return new BaseResponse().failedProcess();
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -49,9 +49,9 @@ public class MerchantService {
             return merchantDao.findById(id).orElse(null);
         } catch (Exception e) {
             logger.error("failed to get merchant by vendor id", e);
+            throw new IllegalArgumentException(e);
         }
 
-        return null;
     }
 
     public BaseResponse getMerchants() {
@@ -61,7 +61,7 @@ public class MerchantService {
             return new BaseResponse().successProcess(merchants);
         } catch (Exception e) {
             logger.error("failed to get list merchant", e);
-            return new BaseResponse().failedProcess();
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -73,13 +73,13 @@ public class MerchantService {
             }).orElse(null);
 
             if (merchant == null) {
-                return new BaseResponse().failedProcess();
+                return new BaseResponse().failedProcess("Merchant not exist");
             }
 
             return new BaseResponse().successProcess();
         } catch (Exception e) {
             logger.error("failed to create merchant", e);
-            return new BaseResponse().failedProcess();
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -90,7 +90,7 @@ public class MerchantService {
             return new BaseResponse().successProcess();
         } catch (Exception e) {
             logger.error("failed to create merchant", e);
-            return new BaseResponse().failedProcess();
+            throw new IllegalArgumentException(e);
         }
     }
 
