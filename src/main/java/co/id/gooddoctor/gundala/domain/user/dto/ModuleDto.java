@@ -9,7 +9,7 @@ public class ModuleDto {
 
     String name;
     String url;
-    String desc;
+    String description;
     String status;
 
 

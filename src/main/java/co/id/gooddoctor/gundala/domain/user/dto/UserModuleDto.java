@@ -9,7 +9,7 @@ import lombok.Data;
 @JsonIgnoreProperties
 public class UserModuleDto {
 
-    String desc;
+    String description;
     String status;
     User users;
     Module modules;

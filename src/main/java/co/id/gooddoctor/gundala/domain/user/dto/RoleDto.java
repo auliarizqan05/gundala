@@ -8,7 +8,7 @@ import lombok.Data;
 public class RoleDto {
 
     String name;
-    String desc;
+    String description;
     String status;
 
 
