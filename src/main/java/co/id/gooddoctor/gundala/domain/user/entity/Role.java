@@ -5,7 +5,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.util.Set;
 
 @Table
 @Entity
@@ -16,13 +17,25 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
 
+    @Column(unique = true, length = 50)
     String name;
     String description;
-    String status;
+    boolean status;
+
+    @ManyToMany(targetEntity = Module.class, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "role_module",
+            joinColumns = @JoinColumn(name = "roles_id"),
+            inverseJoinColumns = @JoinColumn(name = "modules_id"))
+    Set<Module> modules;
+
+//    @JsonIgnore
+//    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+//    Set<User> users;
 
     @CreationTimestamp
-    LocalDate createdDate;
+    Timestamp createdDate;
 
     @UpdateTimestamp
-    LocalDate updatedDate;
+    Timestamp updatedDate;
 }

@@ -5,8 +5,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table
@@ -19,14 +20,21 @@ public class User {
 
     String fullName;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 50)
     String uname;
     String email;
     Date lastLogin;
 
+    @ManyToMany(targetEntity = Role.class, cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id"))
+    Set<Role> roles;
+
     @CreationTimestamp
-    LocalDate createdDate;
+    Timestamp createdDate;
 
     @UpdateTimestamp
-    LocalDate updatedDate;
+    Timestamp updatedDate;
 }

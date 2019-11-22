@@ -8,6 +8,7 @@ import co.id.gooddoctor.gundala.infrastructure.model.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,15 +20,20 @@ public class MerchantService {
 
     @Autowired
     private MerchantDao merchantDao;
+    @Autowired
+    private MerchantMapper merchantMapper;
 
     public BaseResponse createMerchant(MerchantDTO merchantDTO) {
         try {
-            Merchant merchant = MerchantMapper.INSTANCE.dtoToEntity(merchantDTO);
+            Merchant merchant = merchantMapper.dtoToEntity(merchantDTO);
             merchantDao.save(merchant);
 
             return new BaseResponse().successProcess();
         } catch (Exception e) {
             logger.error("failed to create merchant", e);
+            if (e instanceof DataIntegrityViolationException) {
+                throw new IllegalArgumentException("The vendor id (" + merchantDTO.getVendorId() + ") is duplicate ");
+            }
             throw new IllegalArgumentException(e);
         }
     }
@@ -40,13 +46,13 @@ public class MerchantService {
             return new BaseResponse().successProcess(merchant);
         } catch (Exception e) {
             logger.error("failed to get detail merchant", e);
-            throw new IllegalArgumentException(e);
+            return new BaseResponse().failedProcess(e.getMessage(), null);
         }
     }
 
-    public Merchant findByVendorId(long id) {
+    public Merchant findByVendorId(long vendorId) {
         try {
-            return merchantDao.findById(id).orElse(null);
+            return merchantDao.findByVendorId(vendorId).orElse(null);
         } catch (Exception e) {
             logger.error("failed to get merchant by vendor id", e);
             throw new IllegalArgumentException(e);
@@ -61,25 +67,31 @@ public class MerchantService {
             return new BaseResponse().successProcess(merchants);
         } catch (Exception e) {
             logger.error("failed to get list merchant", e);
-            throw new IllegalArgumentException(e);
+            return new BaseResponse().failedProcess(e.getMessage(), null);
         }
     }
 
     public BaseResponse updateMerchant(long id, MerchantDTO merchantDTO) {
         try {
-            Merchant merchant = merchantDao.findById(id).map(merchantMapper -> {
-                merchantMapper = MerchantMapper.INSTANCE.dtoToEntity(merchantDTO);
-                return merchantDao.save(merchantMapper);
+            Merchant merchant = merchantDao.findById(id).map(merchantDataMapper -> {
+                merchantDataMapper = merchantMapper.dtoToEntity(merchantDTO);
+                merchantDataMapper.setId(id);
+
+                return merchantDao.save(merchantDataMapper);
             }).orElse(null);
 
             if (merchant == null) {
-                return new BaseResponse().failedProcess("Merchant not exist");
+                return new BaseResponse().failedProcess("Merchant " + merchantDTO.getVendorId() + " not exist", null);
             }
 
             return new BaseResponse().successProcess();
         } catch (Exception e) {
-            logger.error("failed to create merchant", e);
-            throw new IllegalArgumentException(e);
+            logger.error("failed to update merchant", e);
+            String messageError = e.getMessage();
+            if (e instanceof DataIntegrityViolationException) {
+                messageError = "The vendor id (" + merchantDTO.getVendorId() + ") is duplicate";
+            }
+            return new BaseResponse().failedProcess(messageError, null);
         }
     }
 
@@ -90,7 +102,7 @@ public class MerchantService {
             return new BaseResponse().successProcess();
         } catch (Exception e) {
             logger.error("failed to create merchant", e);
-            throw new IllegalArgumentException(e);
+            return new BaseResponse().failedProcess(e.getMessage(), null);
         }
     }
 

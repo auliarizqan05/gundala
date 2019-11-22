@@ -3,14 +3,9 @@ package co.id.gooddoctor.gundala.domain.settlement.entity;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Entity
@@ -19,6 +14,10 @@ import java.time.LocalDate;
 public class Merchant {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    long id;
+
+    @Column(unique = true)
     long vendorId;
     String vendorName;
     String accountNumber;
@@ -28,7 +27,7 @@ public class Merchant {
     double commissionPercentage;
 
     @CreationTimestamp
-    LocalDate createdDate;
+    Timestamp createdDate;
 
     @UpdateTimestamp
     LocalDate updatedDate;

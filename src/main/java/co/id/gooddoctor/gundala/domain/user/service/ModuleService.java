@@ -19,10 +19,12 @@ public class ModuleService {
 
     @Autowired
     private ModuleDao moduleDao;
+    @Autowired
+    private ModuleMapper moduleMapper;
 
     public BaseResponse createModule(ModuleDto moduleDTO) {
         try {
-            Module module = ModuleMapper.INSTANCE.dtoToEntity(moduleDTO);
+            Module module = moduleMapper.dtoToEntity(moduleDTO);
             moduleDao.save(module);
 
             return new BaseResponse().successProcess();
@@ -67,9 +69,11 @@ public class ModuleService {
 
     public BaseResponse updateModule(long id, ModuleDto moduleDTO) {
         try {
-            Module module = moduleDao.findById(id).map(moduleMapper -> {
-                moduleMapper = ModuleMapper.INSTANCE.dtoToEntity(moduleDTO);
-                return moduleDao.save(moduleMapper);
+            Module module = moduleDao.findById(id).map(moduleDataMapper -> {
+                moduleDataMapper = moduleMapper.dtoToEntity(moduleDTO);
+                moduleDataMapper.setId(id);
+
+                return moduleDao.save(moduleDataMapper);
             }).orElse(null);
 
             if (module == null) {

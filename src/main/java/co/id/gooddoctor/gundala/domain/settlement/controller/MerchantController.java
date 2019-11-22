@@ -1,8 +1,8 @@
 package co.id.gooddoctor.gundala.domain.settlement.controller;
 
 import co.id.gooddoctor.gundala.domain.settlement.dto.MerchantDTO;
-import co.id.gooddoctor.gundala.infrastructure.model.BaseResponse;
 import co.id.gooddoctor.gundala.domain.settlement.service.MerchantService;
+import co.id.gooddoctor.gundala.infrastructure.model.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +20,7 @@ public class MerchantController {
         try {
             baseResponse = merchantService.createMerchant(merchant);
         } catch (Exception e) {
-            baseResponse = new BaseResponse().failedProcess(e.getMessage());
+            baseResponse = new BaseResponse().failedProcess(e.getMessage(), null);
         }
 
         return baseResponse;

@@ -7,10 +7,11 @@ import lombok.Data;
 @JsonIgnoreProperties
 public class ModuleDto {
 
+    long id;
     String name;
     String url;
     String description;
-    String status;
+    boolean status;
 
 
 }

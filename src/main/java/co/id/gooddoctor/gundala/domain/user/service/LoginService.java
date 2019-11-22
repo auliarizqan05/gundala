@@ -1,16 +1,15 @@
 package co.id.gooddoctor.gundala.domain.user.service;
 
-import co.id.gooddoctor.gundala.domain.settlement.entity.Merchant;
-import co.id.gooddoctor.gundala.domain.settlement.mapper.MerchantMapper;
+import co.id.gooddoctor.gundala.domain.user.dao.RoleDao;
 import co.id.gooddoctor.gundala.domain.user.dao.UserDao;
 import co.id.gooddoctor.gundala.domain.user.dto.LoginDto;
+import co.id.gooddoctor.gundala.domain.user.entity.Role;
 import co.id.gooddoctor.gundala.domain.user.entity.User;
 import co.id.gooddoctor.gundala.domain.user.mapper.UserMapper;
 import co.id.gooddoctor.gundala.infrastructure.security.HMACHelper;
 import co.id.gooddoctor.gundala.infrastructure.util.ConstantUtil;
-import org.apache.commons.codec.digest.HmacUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,9 +17,14 @@ import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAu
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
+@Slf4j
 public class LoginService {
+
+    private static long ROLE_DEFAULT = 1l;
 
     @Autowired
     ActiveDirectoryLdapAuthenticationProvider activeDirectoryLdapAuthenticationProvider;
@@ -28,7 +32,10 @@ public class LoginService {
     @Autowired
     UserDao userDao;
 
-    public String login(LoginDto loginDto, String time, String hmac) {
+    @Autowired
+    RoleDao roleDao;
+
+    public User login(LoginDto loginDto, String time, String hmac) {
 
         try {
 
@@ -41,8 +48,9 @@ public class LoginService {
             Authentication auth = activeDirectoryLdapAuthenticationProvider.authenticate(authentication);
 
             if (!auth.isAuthenticated()) {
-                return "Failed Login, not authentication";
+                throw new IllegalArgumentException("User cannot authenticated");
             }
+            log.info("User {} verified", loginDto.getUname());
 
             User userExist = userDao.findByUname(auth.getName());
             if (userExist == null) {
@@ -60,11 +68,27 @@ public class LoginService {
             }
 
             userExist.setLastLogin(new Date());
+
+            Set<Role> roles = new HashSet<>();
+            if (userExist.getRoles() == null) {
+                //default
+                Role role = roleDao.findById(ROLE_DEFAULT).orElse(null);
+                if (role == null) {
+                    throw new IllegalArgumentException("Role is not exist, please create role first");
+                }
+
+                roles.add(role);
+
+            } else {
+                roles = userExist.getRoles();
+            }
+
+            userExist.setRoles(roles);
             userDao.save(userExist);
 
-            return "Success login";
-
+            return userExist;
         } catch (Exception e) {
+            log.error("error when  login", e);
             throw new IllegalArgumentException(e);
         }
 

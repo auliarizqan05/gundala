@@ -1,6 +1,9 @@
 package co.id.gooddoctor.gundala.infrastructure.model;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -25,6 +28,24 @@ public class BaseResponse implements Serializable {
     public BaseResponse failedProcess(Object data) {
         this.code = 1;
         this.message = "Failed";
+        this.status = 500;
+        this.data = data;
+
+        return this;
+    }
+
+    public BaseResponse failedProcess(int status, String message, Object data) {
+        this.code = 1;
+        this.message = message;
+        this.status = status;
+        this.data = data;
+
+        return this;
+    }
+
+    public BaseResponse failedProcess(String message, Object data) {
+        this.code = 1;
+        this.message = message;
         this.status = 500;
         this.data = data;
 

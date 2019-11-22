@@ -1,6 +1,8 @@
 package co.id.gooddoctor.gundala.domain.user.controller;
 
 import co.id.gooddoctor.gundala.domain.user.dto.LoginDto;
+import co.id.gooddoctor.gundala.domain.user.entity.User;
+import co.id.gooddoctor.gundala.domain.user.message.LoginErrorMessage;
 import co.id.gooddoctor.gundala.domain.user.service.LoginService;
 import co.id.gooddoctor.gundala.infrastructure.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +26,11 @@ public class LoginController {
                                   @RequestBody LoginDto loginDto) {
         log.info("Enter to login ");
         try {
-            String message = loginService.login(loginDto, time, hmac);
-            return new BaseResponse().successProcess(message);
+            User user = loginService.login(loginDto, time, hmac);
+            return new BaseResponse().successProcess(user);
         } catch (Exception e) {
-            return new BaseResponse().failedProcess(e.getCause().getLocalizedMessage());
+            String errorMessage = LoginErrorMessage.equalsMessage(e.getCause().getLocalizedMessage());
+            return new BaseResponse().failedProcess(errorMessage, null);
         }
     }
 

@@ -1,34 +1,19 @@
 package co.id.gooddoctor.gundala.domain.settlement.entity;
 
-import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Date;
 
-@Data
-@Entity
-@Table
 public class Settlement {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-
-    String fileName;
-    Date fileDate;
-    long vendorId;
+    BigDecimal orderId;
+    BigDecimal storeId;
+    BigDecimal userId;
+    BigDecimal vendorId;
+    Date orderCreatedDate;
+    Date paymentDate;
+    String paymentStatus;
+    String storeName;
     String vendorName;
-    String filePath;
-
-
-    @CreatedDate
-    LocalDate createdDate;
-
-    @LastModifiedDate
-    LocalDate updatedDate;
-
+    BigDecimal orderSubtotal;
 }

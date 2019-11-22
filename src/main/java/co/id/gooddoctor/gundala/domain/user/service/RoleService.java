@@ -8,6 +8,7 @@ import co.id.gooddoctor.gundala.infrastructure.model.BaseResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,14 +21,22 @@ public class RoleService {
     @Autowired
     private RoleDao roleDao;
 
+    @Autowired
+    private RoleMapper roleMapper;
+
     public BaseResponse createRole(RoleDto roleDTO) {
         try {
-            Role role = RoleMapper.INSTANCE.dtoToEntity(roleDTO);
+            Role role = roleMapper.dtoToEntity(roleDTO);
             roleDao.save(role);
 
             return new BaseResponse().successProcess();
         } catch (Exception e) {
-            logger.error("failed to create role", e);
+            logger.error("failed to create role {} ", roleDTO.getName(), e);
+
+            if (e instanceof DataIntegrityViolationException) {
+                throw new IllegalArgumentException("role '" + roleDTO.getName() + "' already exist ");
+            }
+
             throw new IllegalArgumentException(e);
         }
     }
@@ -67,9 +76,11 @@ public class RoleService {
 
     public BaseResponse updateRole(long id, RoleDto roleDTO) {
         try {
-            Role role = roleDao.findById(id).map(roleMapper -> {
-                roleMapper = RoleMapper.INSTANCE.dtoToEntity(roleDTO);
-                return roleDao.save(roleMapper);
+            Role role = roleDao.findById(id).map(roleDataMapper -> {
+                roleDataMapper = roleMapper.dtoToEntity(roleDTO, roleDataMapper);
+                roleDataMapper.setId(id);
+
+                return roleDao.save(roleDataMapper);
             }).orElse(null);
 
             if (role == null) {
