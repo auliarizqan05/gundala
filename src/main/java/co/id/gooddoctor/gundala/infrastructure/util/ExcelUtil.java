@@ -4,16 +4,21 @@ package co.id.gooddoctor.gundala.infrastructure.util;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class ExcelUtil {
+
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 
     public static Object cellValue(Cell cell) {
         Object cellValue;
         switch (cell.getCellType()) {
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
-                    cellValue = cell.getDateCellValue();
+                    cellValue = DATE_FORMAT.format(cell.getDateCellValue());
                 } else {
-                    cellValue = cell.getNumericCellValue();
+                    cellValue = Double.valueOf(cell.getNumericCellValue());
                 }
                 break;
             case STRING:

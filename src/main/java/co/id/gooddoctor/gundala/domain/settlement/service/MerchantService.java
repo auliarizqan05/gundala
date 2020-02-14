@@ -50,16 +50,6 @@ public class MerchantService {
         }
     }
 
-    public Merchant findByVendorId(long vendorId) {
-        try {
-            return merchantDao.findByVendorId(vendorId).orElse(null);
-        } catch (Exception e) {
-            logger.error("failed to get merchant by vendor id", e);
-            throw new IllegalArgumentException(e);
-        }
-
-    }
-
     public BaseResponse getMerchants() {
         try {
             List<Merchant> merchants = merchantDao.findAll();

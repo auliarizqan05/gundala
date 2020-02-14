@@ -35,7 +35,7 @@ public class GenerateSettlement {
                 .append(DATE_FORMAT.format(dateupload))
                 .append("-")
                 .append(settlementModel.getVendorName())
-                .append(".xls")
+                .append(".xlsx")
                 .toString());
 
         try (InputStream is = new ClassPathResource(ConstantUtil.TEMPLATE_NAME).getInputStream();
@@ -51,7 +51,7 @@ public class GenerateSettlement {
         } catch (IOException e) {
             logger.error("cannot create excel template vendor id = {}, name = {}",
                     settlementModel.getVendorName(), settlementModel.getVendorId(), e);
-            throw new IllegalArgumentException("Something wrong when generate report for vendor ID = {} "
+            throw new IllegalArgumentException("Something wrong when generate report (" + e.getMessage() + ") for vendor ID = "
                     + settlementModel.getVendorId());
         }
     }

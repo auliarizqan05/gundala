@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface SettlementFileDao extends JpaRepository<SettlementFile, Long> {
 
     SettlementFile findByVendorIdAndFileName(long vendorId, String filename);
+
+    SettlementFile findByFileName(String filename);
 }

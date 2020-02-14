@@ -17,8 +17,11 @@ public class SettlementItemModel {
     BigDecimal vendorId;
     Date orderCreatedDate;
     Date paymentDate;
+    Date lastStatusDate;
     String paymentStatus;
     String storeName;
     String vendorName;
     BigDecimal orderSubtotal;
+    double commission;
+    BigDecimal settlementToMerchant;
 }

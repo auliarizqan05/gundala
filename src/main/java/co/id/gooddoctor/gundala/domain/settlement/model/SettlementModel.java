@@ -16,8 +16,9 @@ public class SettlementModel {
     private String noRek;
     private String bank;
     private String periodTrf;
-    private BigDecimal totalPendapatan;
-    private BigDecimal totalLebihBayar;
-    private BigDecimal totalPembayaranSaatIni;
+    private String companyName;
+    private BigDecimal totalOrderSubtotal;
+    private BigDecimal totalCommission;
+    private BigDecimal total;
     private List<SettlementItemModel> items;
 }

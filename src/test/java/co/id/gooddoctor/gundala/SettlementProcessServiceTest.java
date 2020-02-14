@@ -44,9 +44,8 @@ public class SettlementProcessServiceTest {
         genSettlementDto.setBank("ini bank");
         genSettlementDto.setNoRek("ini no rek");
         genSettlementDto.setPeriodTrf("ini perioe trf");
-        genSettlementDto.setTotalPendapatan(new BigDecimal(20000));
-        genSettlementDto.setTotalLebihBayar(new BigDecimal(20000));
-        genSettlementDto.setTotalPembayaranSaatIni(new BigDecimal(20000));
+        genSettlementDto.setTotalOrderSubtotal(new BigDecimal(20000));
+        genSettlementDto.setTotal(new BigDecimal(20000));
 
         SettlementItemModel genSettlementItemDto1 = new SettlementItemModel();
         genSettlementItemDto1.setOrderCreatedDate(new Date());

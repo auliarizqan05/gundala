@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface MerchantDao extends JpaRepository<Merchant, Long> {
 
-    Optional<Merchant> findByVendorId(long vendorId);
+    Optional<Merchant> findByVendorName(String vendorName);
 
 }

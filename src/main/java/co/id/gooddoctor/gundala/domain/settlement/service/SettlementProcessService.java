@@ -1,5 +1,6 @@
 package co.id.gooddoctor.gundala.domain.settlement.service;
 
+import co.id.gooddoctor.gundala.domain.settlement.constant.ColumnNameConstant;
 import co.id.gooddoctor.gundala.domain.settlement.dao.MerchantDao;
 import co.id.gooddoctor.gundala.domain.settlement.dao.SettlementFileDao;
 import co.id.gooddoctor.gundala.domain.settlement.entity.Merchant;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,7 +35,8 @@ import java.util.stream.Collectors;
 public class SettlementProcessService {
 
     private static Logger logger = LoggerFactory.getLogger(SettlementProcessService.class);
-    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+    private final static DateFormat DATE_FORMAT_REPORT = new SimpleDateFormat("MM/dd/yyyy");
 
     @Value("${file.generate.path}")
     private String filePath;
@@ -59,11 +62,11 @@ public class SettlementProcessService {
             List<SettlementItemModel> settlementItemModelList = extractDataExcel(file);
 
             //grouping data by vendor id
-            Map<BigDecimal, List<SettlementItemModel>> groupByVendorId = mappingByVendorId(settlementItemModelList,
+            Map<String, List<SettlementItemModel>> groupByVendorName = mappingByVendorName(settlementItemModelList,
                     dateUpload);
 
             //process generate report for settlement
-            processGenerateSettlement(groupByVendorId, dateUpload);
+            processGenerateSettlement(groupByVendorName, dateUpload);
 
             result = "Upload Success";
         } catch (Exception e) {
@@ -76,44 +79,69 @@ public class SettlementProcessService {
 
     private List<SettlementItemModel> extractDataExcel(MultipartFile file) {
 
+        logger.info("running process extract data from file {} ", file.getName());
         List<SettlementItemModel> settlementItemModelList = new ArrayList<>();
         try (InputStream excelFile = file.getInputStream();
+
              XSSFWorkbook workbook = new XSSFWorkbook(excelFile)) {
-
             XSSFSheet sheet = workbook.getSheetAt(0);
-
             Iterator<Row> rowIterator = sheet.iterator();
+            sheet.getRow(0).getCell(1).getRichStringCellValue();
+
+            Map<String, Integer> columnIndex = new HashMap<>();
+            sheet.getRow(0).cellIterator().forEachRemaining(cell -> {
+                String columnName = cell.getRichStringCellValue().getString();
+                boolean isUsedColumn = ColumnNameConstant.COLUMN_NAME_INDEX(columnName);
+                if (isUsedColumn)
+                    columnIndex.put(columnName, cell.getColumnIndex());
+            });
+
             rowIterator.next();
-
             rowIterator.forEachRemaining(row -> {
+                BigDecimal vendorId = BigDecimal.valueOf(((double) ExcelUtil.cellValue(row.getCell(
+                        columnIndex.get(ColumnNameConstant.VENDOR_ID)))));
+                String status = (String) ExcelUtil.cellValue(row.getCell(
+                        columnIndex.get(ColumnNameConstant.PAYMENT_STATUS)));
 
-                BigDecimal vendorId = BigDecimal.valueOf((double) ExcelUtil.cellValue(row.getCell(1)));
-                String status = (String) ExcelUtil.cellValue(row.getCell(6));
-                Date orderCreatedDate = row.getCell(7) == null ?
-                        null : (Date) ExcelUtil.cellValue(row.getCell(7));
-                Date paymentDate = row.getCell(8) == null ?
-                        null : (Date) ExcelUtil.cellValue(row.getCell(8));
-                BigDecimal orderId = BigDecimal.valueOf((double) ExcelUtil.cellValue(row.getCell(0)));
-                BigDecimal storeId = BigDecimal.valueOf((double) ExcelUtil.cellValue(row.getCell(3)));
-                BigDecimal userId = BigDecimal.valueOf((double) ExcelUtil.cellValue(row.getCell(5)));
+                Date lastStatusDate = null;
+                try {
+                    Date orderCreatedDate = (row.getCell(columnIndex.get(ColumnNameConstant.ORDER_CREATED_DATE)) == null) ?
+                            null : DATE_FORMAT.parse((String) ExcelUtil.cellValue(
+                            row.getCell(columnIndex.get(ColumnNameConstant.ORDER_CREATED_DATE))));
+                    Date orderDeliveredDate = (row.getCell(columnIndex.get(ColumnNameConstant.ORDER_DELIVERED_DATE)) == null) ?
+                            null : DATE_FORMAT.parse((String) ExcelUtil.cellValue(
+                            row.getCell(columnIndex.get(ColumnNameConstant.ORDER_DELIVERED_DATE))));
+                    lastStatusDate = orderDeliveredDate == null ? orderCreatedDate : orderDeliveredDate;
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
-                String storeName = row.getCell(4) == null ?
-                        "" : (String) ExcelUtil.cellValue(row.getCell(4));
-                String vendorName = row.getCell(2) == null ?
-                        "" : (String) ExcelUtil.cellValue(row.getCell(2));
-                BigDecimal orderSubtotal = BigDecimal.valueOf((double) ExcelUtil.cellValue(row.getCell(14)));
+                BigDecimal orderId = BigDecimal.valueOf((double) ExcelUtil.cellValue(row.getCell(
+                        columnIndex.get(ColumnNameConstant.ORDER_ID))));
+                BigDecimal storeId = BigDecimal.valueOf((double) ExcelUtil.cellValue(row.getCell(
+                        columnIndex.get(ColumnNameConstant.STORE_ID))));
+                BigDecimal userId = BigDecimal.valueOf(((double) ExcelUtil.cellValue(row.getCell(
+                        columnIndex.get(ColumnNameConstant.USER_ID)))));
+                String storeName = (row.getCell(columnIndex.get(ColumnNameConstant.STORE_NAME)) == null)
+                        ? "" : (String) ExcelUtil.cellValue(row.getCell(columnIndex.get(ColumnNameConstant.STORE_NAME)));
+                String vendorName = (row.getCell(columnIndex.get(ColumnNameConstant.VENDOR_NAME)) == null) ?
+                        "" : (String) ExcelUtil.cellValue(row.getCell(
+                        columnIndex.get(ColumnNameConstant.VENDOR_NAME)));
 
-                logger.info("the status for vendorId : {} is {} at {}",
+                Object total = ExcelUtil.cellValue(row.getCell(
+                        columnIndex.get(ColumnNameConstant.ORDER_SUBTOTAL)));
+                BigDecimal orderSubtotal = BigDecimal.valueOf((double) total);
+
+                logger.debug("the status for vendorId : {} is {} at {}",
                         NumberToTextConverter.toText(vendorId.doubleValue()),
-                        status, orderCreatedDate);
+                        status, lastStatusDate);
 
                 SettlementItemModel settlementItemModel = SettlementItemModel.builder().
                         orderId(orderId).
                         storeId(storeId).
                         userId(userId).
                         vendorId(vendorId).
-                        orderCreatedDate(orderCreatedDate).
-                        paymentDate(paymentDate).
+                        lastStatusDate(lastStatusDate).
                         paymentStatus(status).
                         storeName(storeName).
                         vendorName(vendorName).
@@ -138,23 +166,23 @@ public class SettlementProcessService {
         return settlementItemModelList;
     }
 
-    private Map<BigDecimal, List<SettlementItemModel>> mappingByVendorId(List<SettlementItemModel>
+    private Map<String, List<SettlementItemModel>> mappingByVendorName(List<SettlementItemModel>
                                                                                  settlementItemModelList,
-                                                                         Date dateUpload) {
+                                                                       Date dateUpload) {
 
-        //validation vendorId is exist or no
+        //validation vendorName is exist or no
         List<Merchant> merchants = merchantDao.findAll();
-        boolean isMerchantExist = merchants
-                .stream()
-                .allMatch(merchant ->
-                        settlementItemModelList
-                                .stream()
-                                .anyMatch(settlementItemModel ->
-                                        settlementItemModel.getVendorId().longValue() == merchant.getVendorId()));
-
-        if (!isMerchantExist) {
-            throw new IllegalStateException("Vendor ID isn't stored in the database yet");
-        }
+//        boolean isMerchantExist = merchants
+//                .stream()
+//                .allMatch(merchant ->
+//                        settlementItemModelList
+//                                .stream()
+//                                .anyMatch(settlementItemModel ->
+//                                        settlementItemModel.getVendorName().longValue() == merchant.getVendorName()));
+//
+//        if (!isMerchantExist) {
+//            throw new IllegalStateException("Vendor Name isn't stored in the database yet");
+//        }
 
         return settlementItemModelList
                 .stream()
@@ -162,59 +190,91 @@ public class SettlementProcessService {
                         StringUtils.equalsAnyIgnoreCase(settlementItemModel.getPaymentStatus(),
                                 ConstantUtil.STATUS_PAID_DELIVERED))
                 .filter(settlementItemModel ->
-                        DateUtils.isSameDay(dateUpload, settlementItemModel.getOrderCreatedDate()))
+                        DateUtils.isSameDay(dateUpload, settlementItemModel.getLastStatusDate()))
+                .filter(settlementItemModel -> merchants.stream().anyMatch(merchant ->
+                        StringUtils.equals(settlementItemModel.getVendorName(), merchant.getVendorName())))
                 .collect(Collectors.
-                        groupingBy(SettlementItemModel::getVendorId,
+                        groupingBy(SettlementItemModel::getVendorName,
                                 Collectors.toList()));
     }
 
-    private boolean processGenerateSettlement(Map<BigDecimal, List<SettlementItemModel>> groupByVendorId,
+    private boolean processGenerateSettlement(Map<String, List<SettlementItemModel>> groupByVendorName,
                                               Date dateUpload) {
 
         GenerateSettlement generateSettlement = new GenerateSettlement();
         AtomicBoolean statusProcess = new AtomicBoolean(false);
         try {
 
-            logger.info("number of vendor id will generate : {} ", groupByVendorId.size());
-            if (groupByVendorId.size() == 0) {
+            logger.info("number of vendor id will generate : {} ", groupByVendorName.size());
+            logger.info("process generate file report ");
+            if (groupByVendorName.size() == 0) {
                 logger.info("there is no data to generate report, might be date or status not satisfied");
                 throw new IllegalStateException("There is no data to generate report");
             }
-            groupByVendorId.entrySet().forEach(mapperByVendorId -> {
+            groupByVendorName.entrySet().forEach(mapperByVendorName -> {
 
-                int totalPendapatan = mapperByVendorId.getValue()
-                        .stream()
-                        .mapToInt(value -> value.getOrderSubtotal().intValue()).sum();
-                long vendorId = mapperByVendorId.getKey().longValue();
+                String vendorName = mapperByVendorName.getKey();
 
-                Merchant merchant = merchantDao.findByVendorId(vendorId).orElse(null);
+                Merchant merchant = merchantDao.findByVendorName(vendorName).orElse(null);
                 if (merchant == null) {
-                    logger.info("vendor id {} not found in our database ", vendorId);
+                    logger.info("vendor name {} not found in our database ", vendorName);
                 } else {
+
+                    //calculate orderSubtotal
+                    int totalOrderSubtotal = mapperByVendorName.getValue()
+                            .stream()
+                            .mapToInt(value -> value.getOrderSubtotal().intValue()).sum();
+
+                    //set & calculate commission & settlementToMerchant
+                    mapperByVendorName.getValue().forEach(settlementItemModel -> {
+                        double commissions = (settlementItemModel.getOrderSubtotal().intValue()
+                                * merchant.getCommissionPercentage()) / 100;
+                        settlementItemModel.setCommission(commissions);
+
+                        BigDecimal settlementToMerchant = settlementItemModel.getOrderSubtotal()
+                                .subtract(BigDecimal.valueOf(commissions));
+
+                        settlementItemModel.setSettlementToMerchant(settlementToMerchant);
+                    });
+
+                    //calculate commission
+                    double totalCommission = mapperByVendorName.getValue()
+                            .stream()
+                            .mapToDouble(value -> value.getCommission()).sum();
+
+                    //calculate settlementToMerchant
+                    int total = mapperByVendorName.getValue()
+                            .stream()
+                            .mapToInt(value -> value.getSettlementToMerchant().intValue()).sum();
+
                     SettlementModel settlementModel = SettlementModel
                             .builder()
                             .bank(merchant.getBankName())
                             .vendorName(merchant.getVendorName())
                             .vendorId(merchant.getVendorId())
                             .noRek(String.valueOf(merchant.getAccountNumber()))
+                            .companyName(merchant.getCompanyName())
                             .title(ConstantUtil.TITLE_GENERATE_REPORT)
-                            .totalPendapatan(new BigDecimal(totalPendapatan))
-                            .items(mapperByVendorId.getValue())
+                            .totalCommission(BigDecimal.valueOf(totalCommission))
+                            .totalOrderSubtotal(new BigDecimal(totalOrderSubtotal))
+                            .total(BigDecimal.valueOf(total))
+                            .periodTrf(DATE_FORMAT_REPORT.format(dateUpload))
+                            .items(mapperByVendorName.getValue())
                             .build();
 
                     SettlementFile settlementFile = generateSettlement.generateExcel(settlementModel,
                             filePath, dateUpload);
                     statusProcess.set(saveSettlementFile(settlementFile));
 
-                    logger.info("success generate report for Vendor Id : {}", merchant.getVendorId());
+                    logger.debug("success generate report for Vendor Id : {}", merchant.getVendorName());
                 }
             });
 
         } catch (Exception e) {
-            logger.error("Error process generate report : {} ", e.getMessage());
+            logger.error("Error process generate report :  ", e);
             throw new IllegalArgumentException(e.getMessage());
         }
-
+        logger.info("success create report {} ", DATE_FORMAT_REPORT.format(dateUpload));
         return statusProcess.get();
     }
 
@@ -222,8 +282,7 @@ public class SettlementProcessService {
 
         boolean status = false;
         if (settlementFile != null) {
-            SettlementFile settlementFileExist = settlementFileDao.findByVendorIdAndFileName(
-                    settlementFile.getVendorId(),
+            SettlementFile settlementFileExist = settlementFileDao.findByFileName(
                     settlementFile.getFileName());
 
             if (settlementFileExist == null) {
@@ -233,7 +292,7 @@ public class SettlementProcessService {
                 settlementFileDao.save(settlementFileExist);
             }
 
-            logger.info("success save file {} to settlement file table", settlementFile.getFileName());
+            logger.debug("success save file {} to settlement file table", settlementFile.getFileName());
 
             status = true;
         }
